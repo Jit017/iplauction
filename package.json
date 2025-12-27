@@ -1,0 +1,21 @@
+{
+  "name": "ipl-auction-simulator",
+  "version": "1.0.0",
+  "description": "IPL Auction Simulator",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "build:ui": "esbuild ui.ts --bundle --format=esm --outfile=ui.js --external:fs --external:path",
+    "convert": "ts-node convert-csv-to-players.ts",
+    "validate": "ts-node validate-players.ts",
+    "serve": "npm run build:ui && npx http-server . -p 8080 -o",
+    "dev": "npm run build:ui && npx http-server . -p 8080"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "esbuild": "^0.19.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  }
+}
+

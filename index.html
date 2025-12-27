@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPL Auction Simulator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>IPL Auction Simulator</h1>
+        </header>
+
+        <main>
+            <!-- Pre-Auction Setup Screen -->
+            <section id="setup-screen" class="setup-screen">
+                <h2>Pre-Auction Setup</h2>
+                
+                <div class="setup-content">
+                    <!-- Auction Type Selection -->
+                    <div class="setup-section">
+                        <h3>1. Select Auction Type</h3>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="auction-type" value="mega" checked>
+                                <span>Mega Auction</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="auction-type" value="mini">
+                                <span>Mini Auction</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Team Selection -->
+                    <div class="setup-section">
+                        <h3>2. Select Team</h3>
+                        <select id="setup-team-selector" class="team-selector-large">
+                            <option value="">-- Select Team --</option>
+                        </select>
+                    </div>
+
+                    <!-- Previous Season Squad -->
+                    <div class="setup-section" id="squad-section" style="display: none;">
+                        <h3>3. Previous Season Squad</h3>
+                        <div id="previous-squad" class="squad-list">
+                            <!-- Squad will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Retention Summary -->
+                    <div class="setup-section" id="retention-summary" style="display: none;">
+                        <h3>4. Retention Summary</h3>
+                        <div class="retention-stats">
+                            <div class="stat-item">
+                                <label>Retained Players:</label>
+                                <span id="retained-count">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <label>Retention Cost:</label>
+                                <span id="retention-cost" class="cost-amount">0.00 Cr</span>
+                            </div>
+                            <div class="stat-item">
+                                <label>Remaining Purse:</label>
+                                <span id="remaining-purse" class="purse-amount">100.00 Cr</span>
+                            </div>
+                        </div>
+                        <div id="retention-errors" class="error-message" style="display: none;"></div>
+                    </div>
+
+                    <!-- Proceed Button -->
+                    <div class="setup-actions">
+                        <button id="proceed-btn" class="btn btn-primary" disabled>Proceed to Auction</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Auction Screen (initially hidden) -->
+            <div id="auction-screen" style="display: none;">
+            <!-- Current Player Card -->
+            <section class="player-card">
+                <h2>Current Player</h2>
+                <div id="player-info" class="player-info">
+                    <p class="no-player">No player set</p>
+                </div>
+            </section>
+
+            <!-- Auction Status -->
+            <section class="auction-status">
+                <div class="status-row">
+                    <div class="status-item">
+                        <label>Current Bid:</label>
+                        <span id="current-bid" class="bid-amount">0.00 Cr</span>
+                    </div>
+                    <div class="status-item">
+                        <label>Leading Team:</label>
+                        <span id="leading-team" class="team-name">-</span>
+                    </div>
+                    <div class="status-item">
+                        <label>Timer:</label>
+                        <span id="timer" class="timer">0s</span>
+                    </div>
+                    <div class="status-item">
+                        <label>Status:</label>
+                        <span id="auction-status" class="status-badge">IDLE</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Controls -->
+            <section class="controls">
+                <button id="start-btn" class="btn btn-primary">Start Auction</button>
+                <button id="next-btn" class="btn btn-secondary" disabled>Next Player</button>
+                <button id="pause-btn" class="btn btn-secondary" disabled>Pause</button>
+                <button id="resume-btn" class="btn btn-secondary" disabled>Resume</button>
+            </section>
+
+            <!-- Manual Bidding Controls -->
+            <section class="manual-bidding">
+                <h2>Manual Bidding</h2>
+                <div class="bid-controls">
+                    <div class="control-group">
+                        <label for="team-selector">Select Team:</label>
+                        <select id="team-selector" class="team-selector">
+                            <option value="">-- Select Team --</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Next Bid:</label>
+                        <span id="next-bid-amount" class="next-bid">-</span>
+                    </div>
+                    <button id="manual-bid-btn" class="btn btn-bid-primary" disabled>Place Bid</button>
+                </div>
+            </section>
+
+            <!-- Team Purse Overview -->
+            <section class="teams-section">
+                <h2>Team Purse Overview</h2>
+                <div id="teams-list" class="teams-list">
+                    <!-- Teams will be populated here -->
+                </div>
+            </section>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="ui.js"></script>
+</body>
+</html>
+
