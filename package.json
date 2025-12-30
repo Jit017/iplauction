@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "build:ui": "esbuild ui.ts --bundle --format=esm --outfile=ui.js --external:fs --external:path",
+    "build:vercel": "npm run build:ui && mkdir -p public && cp index.html styles.css ui.js players.ts types.ts teams.ts previous-season-squads.ts auction-state.ts public/",
     "convert": "ts-node convert-csv-to-players.ts",
     "validate": "ts-node validate-players.ts",
     "serve": "npm run build:ui && npx http-server . -p 8080 -o",
