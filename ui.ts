@@ -7,6 +7,10 @@ import { getSelectedTeamId, getSelectedTeam } from './auction-state';
 import { aiBidWithStopping } from './ai-bidding';
 
 // UI Elements
+const landingScreenEl = document.getElementById('landing-screen')!;
+const setupScreenEl = document.getElementById('setup-screen')!;
+const auctionScreenEl = document.getElementById('auction-screen')!;
+const startAuctionBtn = document.getElementById('start-auction-btn')!;
 const playerInfoEl = document.getElementById('player-info')!;
 const currentBidEl = document.getElementById('current-bid')!;
 const leadingTeamEl = document.getElementById('leading-team')!;
@@ -582,15 +586,50 @@ resumeBtn.addEventListener('click', () => {
   }
 });
 
+/**
+ * Show landing page
+ */
+function showLandingPage() {
+  landingScreenEl.style.display = 'block';
+  setupScreenEl.style.display = 'none';
+  auctionScreenEl.style.display = 'none';
+}
+
+/**
+ * Show setup page
+ */
+function showSetupPage() {
+  landingScreenEl.style.display = 'none';
+  setupScreenEl.style.display = 'block';
+  auctionScreenEl.style.display = 'none';
+}
+
+/**
+ * Show auction page
+ */
+function showAuctionPage() {
+  landingScreenEl.style.display = 'none';
+  setupScreenEl.style.display = 'none';
+  auctionScreenEl.style.display = 'block';
+}
+
 // Initialize setup screen first, then auction
 async function initializeApp() {
-  // Initialize teams first (for auction engine later)
-  teams = await initializeTeams();
-  
-  // Initialize setup screen (loads teams internally from central data file)
-  await initializeSetupScreen((setupState: SetupState) => {
-    // Setup complete - initialize auction with updated teams
-    initializeAuctionWithSetup(setupState);
+  // Show landing page initially
+  showLandingPage();
+
+  // Handle "Start Auction" button click
+  startAuctionBtn.addEventListener('click', async () => {
+    showSetupPage();
+    
+    // Initialize teams first (for auction engine later)
+    teams = await initializeTeams();
+    
+    // Initialize setup screen (loads teams internally from central data file)
+    await initializeSetupScreen((setupState: SetupState) => {
+      // Setup complete - initialize auction with updated teams
+      initializeAuctionWithSetup(setupState);
+    });
   });
 }
 
@@ -664,6 +703,9 @@ async function initializeAuctionWithSetup(setupState: SetupState) {
     
     // Initialize manual bidding controls
     initializeManualBidding();
+
+    // Show auction page
+    showAuctionPage();
 
     console.log('Auction initialized after setup');
   } catch (error) {

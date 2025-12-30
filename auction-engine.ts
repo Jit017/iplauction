@@ -265,6 +265,11 @@ export class AuctionEngine {
 
   /**
    * Handle timer expiry
+   * 
+   * When timer expires:
+   * - If there's a leading team with a valid bid >= base price, sell to that team
+   * - If no bids occurred (no leading team), mark as UNSOLD
+   * - User skipping doesn't affect the outcome - highest bidder wins
    */
   private handleTimerExpiry(): void {
     this.stopTimer();
@@ -284,13 +289,38 @@ export class AuctionEngine {
     const leadingTeam = this.state.leadingTeam;
 
     // Check if no bids occurred (bid is still at base price and no leading team)
+    // This means no one bid at all, not even AI teams
     const noBidsOccurred = 
       currentBid === player.basePrice && 
       leadingTeam === null;
 
     if (noBidsOccurred) {
-      // No bids received - mark as UNSOLD
+      // No bids received from anyone - mark as UNSOLD
       this.endAuctionAsUnsold('No bids received before timer ended');
+      return;
+    }
+
+    // If there's a leading team, we have a bidder (could be AI or user)
+    // Check if the bid is valid (>= base price)
+    if (leadingTeam && currentBid >= player.basePrice) {
+      // We have a valid bid from a team - sell to the highest bidder
+      // This works regardless of whether user bid or skipped
+      const validation = validateAuctionPrice(
+        currentBid,
+        player,
+        true // timer expired
+      );
+
+      if (validation.canEnd) {
+        // Auction can end - sell the player to the leading team
+        this.endAuctionAsSold();
+      } else if (validation.mustExtend) {
+        // Auction must continue - extend timer (bid below minPrice)
+        this.extendTimer();
+      } else {
+        // Invalid state - end as unsold
+        this.endAuctionAsUnsold(validation.error || 'Invalid auction state');
+      }
       return;
     }
 
@@ -300,23 +330,15 @@ export class AuctionEngine {
       return;
     }
 
-    // Use price validator to check if auction can end
-    const validation = validateAuctionPrice(
-      currentBid,
-      player,
-      true // timer expired
-    );
-
-    if (validation.canEnd) {
-      // Auction can end - sell the player
+    // Fallback: if we have a leading team but something went wrong, try to sell
+    if (leadingTeam) {
+      console.warn('Unexpected state: leading team exists but validation failed. Attempting to sell...');
       this.endAuctionAsSold();
-    } else if (validation.mustExtend) {
-      // Auction must continue - extend timer (bid below minPrice)
-      this.extendTimer();
-    } else {
-      // Invalid state - end as unsold
-      this.endAuctionAsUnsold(validation.error || 'Invalid auction state');
+      return;
     }
+
+    // No valid bidder - mark as unsold
+    this.endAuctionAsUnsold('No valid bidder found');
   }
 
   /**
@@ -524,6 +546,8 @@ export class AuctionEngine {
 
   /**
    * End auction as SOLD
+   * Sells the player to the leading team (highest bidder)
+   * Works regardless of whether user bid or skipped - highest bidder wins
    */
   private endAuctionAsSold(): void {
     if (!this.state.currentPlayer || !this.state.leadingTeam) {
@@ -542,6 +566,9 @@ export class AuctionEngine {
       );
       return;
     }
+
+    // Log the sale for debugging - shows player sold to highest bidder
+    console.log(`✓ Player ${player.name} SOLD to ${team.name} for ${bidAmount} Cr (highest bidder)`);
 
     // Find team in teams array and update
     const teamIndex = this.teams.findIndex((t) => t.id === team.id);

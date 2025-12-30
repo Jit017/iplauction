@@ -9,12 +9,87 @@
 <body>
     <div class="container">
         <header>
-            <h1>IPL Auction Simulator</h1>
+            <h1>🏏 IPL Auction Simulator</h1>
         </header>
 
         <main>
+            <!-- Landing Page with Rules -->
+            <section id="landing-screen" class="landing-screen">
+                <div class="landing-hero">
+                    <div class="hero-content">
+                        <div class="hero-icon">🏏</div>
+                        <h2>Welcome to the IPL Auction Simulator</h2>
+                        <p class="hero-subtitle">Experience the thrill of building your dream IPL squad!</p>
+                        <div class="hero-features">
+                            <span class="feature-badge">⚡ Real-time Bidding</span>
+                            <span class="feature-badge">🤖 AI Teams</span>
+                            <span class="feature-badge">📊 Live Stats</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rules-container">
+                    <h3>📋 Auction Rules</h3>
+                    
+                    <div class="rules-grid">
+                        <div class="rule-card">
+                            <div class="rule-icon">💰</div>
+                            <h4>Starting Purse</h4>
+                            <p>Each team starts with <strong>100 Crores</strong> to build their squad</p>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="rule-icon">👥</div>
+                            <h4>Squad Size</h4>
+                            <p>Maximum <strong>25 players</strong> per team, including <strong>8 overseas</strong> players</p>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="rule-icon">🎯</div>
+                            <h4>Role Requirements</h4>
+                            <p>Minimum: <strong>6 Batsmen</strong>, <strong>6 Bowlers</strong>, <strong>2 All-Rounders</strong>, <strong>1 Wicket-Keeper</strong></p>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="rule-icon">📈</div>
+                            <h4>Bid Increments</h4>
+                            <p>Below 5 Cr: <strong>0.25 Cr</strong> | 5-10 Cr: <strong>0.5 Cr</strong> | Above 10 Cr: <strong>1 Cr</strong></p>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="rule-icon">⏱️</div>
+                            <h4>Auction Timer</h4>
+                            <p>Each player has a <strong>30-second</strong> bidding window. Timer resets with each new bid</p>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="rule-icon">🔄</div>
+                            <h4>Retention Rules</h4>
+                            <p><strong>Mega Auction:</strong> Max 6 retentions (4 capped, 2 uncapped)<br>
+                            <strong>Mini Auction:</strong> Unlimited retentions allowed</p>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="rule-icon">🤖</div>
+                            <h4>AI Bidding</h4>
+                            <p>AI teams bid automatically based on player ratings, team needs, and aggression levels</p>
+                        </div>
+
+                        <div class="rule-card">
+                            <div class="rule-icon">⭐</div>
+                            <h4>Base Prices</h4>
+                            <p><strong>Capped players:</strong> 2 Cr | <strong>Uncapped players:</strong> 1 Cr</p>
+                        </div>
+                    </div>
+
+                    <div class="landing-actions">
+                        <button id="start-auction-btn" class="btn btn-hero">Start Auction</button>
+                    </div>
+                </div>
+            </section>
+
             <!-- Pre-Auction Setup Screen -->
-            <section id="setup-screen" class="setup-screen">
+            <section id="setup-screen" class="setup-screen" style="display: none;">
                 <h2>Pre-Auction Setup</h2>
                 
                 <div class="setup-content">

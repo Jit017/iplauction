@@ -684,6 +684,11 @@ var init_auction_engine = __esm({
       }
       /**
        * Handle timer expiry
+       * 
+       * When timer expires:
+       * - If there's a leading team with a valid bid >= base price, sell to that team
+       * - If no bids occurred (no leading team), mark as UNSOLD
+       * - User skipping doesn't affect the outcome - highest bidder wins
        */
       handleTimerExpiry() {
         this.stopTimer();
@@ -703,23 +708,32 @@ var init_auction_engine = __esm({
           this.endAuctionAsUnsold("No bids received before timer ended");
           return;
         }
+        if (leadingTeam && currentBid >= player.basePrice) {
+          const validation = validateAuctionPrice(
+            currentBid,
+            player,
+            true
+            // timer expired
+          );
+          if (validation.canEnd) {
+            this.endAuctionAsSold();
+          } else if (validation.mustExtend) {
+            this.extendTimer();
+          } else {
+            this.endAuctionAsUnsold(validation.error || "Invalid auction state");
+          }
+          return;
+        }
         if (currentBid < player.basePrice) {
           this.endAuctionAsUnsold(`Bid (${currentBid}) is below base price (${player.basePrice})`);
           return;
         }
-        const validation = validateAuctionPrice(
-          currentBid,
-          player,
-          true
-          // timer expired
-        );
-        if (validation.canEnd) {
+        if (leadingTeam) {
+          console.warn("Unexpected state: leading team exists but validation failed. Attempting to sell...");
           this.endAuctionAsSold();
-        } else if (validation.mustExtend) {
-          this.extendTimer();
-        } else {
-          this.endAuctionAsUnsold(validation.error || "Invalid auction state");
+          return;
         }
+        this.endAuctionAsUnsold("No valid bidder found");
       }
       /**
        * Extend the timer when bid is below minPrice
@@ -871,6 +885,8 @@ var init_auction_engine = __esm({
       }
       /**
        * End auction as SOLD
+       * Sells the player to the leading team (highest bidder)
+       * Works regardless of whether user bid or skipped - highest bidder wins
        */
       endAuctionAsSold() {
         if (!this.state.currentPlayer || !this.state.leadingTeam) {
@@ -886,6 +902,7 @@ var init_auction_engine = __esm({
           );
           return;
         }
+        console.log(`\u2713 Player ${player.name} SOLD to ${team.name} for ${bidAmount} Cr (highest bidder)`);
         const teamIndex = this.teams.findIndex((t) => t.id === team.id);
         if (teamIndex === -1) {
           throw new Error(`Team ${team.id} not found`);
@@ -4187,6 +4204,10 @@ function updateProceedButton() {
 
 // ui.ts
 init_ai_bidding();
+var landingScreenEl = document.getElementById("landing-screen");
+var setupScreenEl2 = document.getElementById("setup-screen");
+var auctionScreenEl2 = document.getElementById("auction-screen");
+var startAuctionBtn = document.getElementById("start-auction-btn");
 var playerInfoEl = document.getElementById("player-info");
 var currentBidEl = document.getElementById("current-bid");
 var leadingTeamEl = document.getElementById("leading-team");
@@ -4560,10 +4581,29 @@ resumeBtn.addEventListener("click", () => {
     resumeBtn.disabled = true;
   }
 });
+function showLandingPage() {
+  landingScreenEl.style.display = "block";
+  setupScreenEl2.style.display = "none";
+  auctionScreenEl2.style.display = "none";
+}
+function showSetupPage() {
+  landingScreenEl.style.display = "none";
+  setupScreenEl2.style.display = "block";
+  auctionScreenEl2.style.display = "none";
+}
+function showAuctionPage() {
+  landingScreenEl.style.display = "none";
+  setupScreenEl2.style.display = "none";
+  auctionScreenEl2.style.display = "block";
+}
 async function initializeApp() {
-  teams2 = await initializeTeams();
-  await initializeSetupScreen((setupState) => {
-    initializeAuctionWithSetup(setupState);
+  showLandingPage();
+  startAuctionBtn.addEventListener("click", async () => {
+    showSetupPage();
+    teams2 = await initializeTeams();
+    await initializeSetupScreen((setupState) => {
+      initializeAuctionWithSetup(setupState);
+    });
   });
 }
 async function initializeAuctionWithSetup(setupState) {
@@ -4612,6 +4652,7 @@ async function initializeAuctionWithSetup(setupState) {
     manager.subscribe(handleAuctionEvent);
     renderTeams();
     initializeManualBidding();
+    showAuctionPage();
     console.log("Auction initialized after setup");
   } catch (error) {
     console.error("Error initializing auction:", error);
