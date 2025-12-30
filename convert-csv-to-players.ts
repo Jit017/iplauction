@@ -431,10 +431,25 @@ function convertCSVToPlayers(csvPath: string): Player[] {
  * Generates TypeScript file with Player array
  */
 function generateTypeScriptFile(players: Player[], outputPath: string): void {
-  const imports = `import { Player } from './types';\n\n`;
-  const exportStatement = `export const players: Player[] = `;
-  const content = JSON.stringify(players, null, 2);
-  const fullContent = imports + exportStatement + content + ';\n';
+  const imports = `import { Player, PlayerRole } from './types';\n\n`;
+  const exportStatement = `export const players: Player[] = [\n`;
+  
+  // Generate player objects with proper enum references
+  const playerStrings = players.map(p => {
+    const roleMap: { [key: string]: string } = {
+      'Batsman': 'PlayerRole.BATSMAN',
+      'Bowler': 'PlayerRole.BOWLER',
+      'All-rounder': 'PlayerRole.ALL_ROUNDER',
+      'Wicket-keeper': 'PlayerRole.WICKET_KEEPER',
+      'Wicket-keeper Batsman': 'PlayerRole.WICKET_KEEPER_BATSMAN'
+    };
+    
+    const roleEnum = roleMap[p.role] || `"${p.role}"`;
+    
+    return `  {\n    id: "${p.id}",\n    name: "${p.name}",\n    role: ${roleEnum},\n    basePrice: ${p.basePrice},\n    minPrice: ${p.minPrice},\n    maxPrice: ${p.maxPrice},\n    rating: ${p.rating},\n    popularity: ${p.popularity},\n    isCapped: ${p.isCapped}\n  }`;
+  });
+  
+  const fullContent = imports + exportStatement + playerStrings.join(',\n') + '\n];\n';
 
   writeFileSync(outputPath, fullContent, 'utf-8');
   console.log(`Generated TypeScript file: ${outputPath}`);

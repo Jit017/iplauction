@@ -151,7 +151,7 @@ export class AuctionManager {
    * Refresh auctionable players list (excludes retained players)
    */
   private refreshAuctionablePlayers(): void {
-    const teams = this.engine.getTeams();
+    const teams = [...this.engine.getTeams()]; // Convert readonly to mutable array
     this.auctionablePlayers = getAuctionablePlayers(this.players, teams);
   }
 
@@ -162,7 +162,7 @@ export class AuctionManager {
     // Refresh auctionable players to ensure we have the latest list
     this.refreshAuctionablePlayers();
     
-    const teams = this.engine.getTeams();
+    const teams = [...this.engine.getTeams()]; // Convert readonly to mutable array
     
     while (this.currentPlayerIndex < this.auctionablePlayers.length) {
       const player = this.auctionablePlayers[this.currentPlayerIndex];
@@ -252,7 +252,7 @@ export class AuctionManager {
 
     try {
       // Validate player before setting (double-check retained status)
-      const teams = this.engine.getTeams();
+      const teams = [...this.engine.getTeams()]; // Convert readonly to mutable array
       
       // Explicit check for retained players - CRITICAL: Never auction retained players
       if (isPlayerRetained(player, teams)) {
@@ -400,7 +400,7 @@ export class AuctionManager {
    * Get auction pool statistics
    */
   getAuctionPoolStats() {
-    const teams = this.engine.getTeams();
+    const teams = [...this.engine.getTeams()]; // Convert readonly to mutable array
     return getAuctionPoolStats(this.players, teams);
   }
 

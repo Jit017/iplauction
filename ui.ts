@@ -10,20 +10,20 @@ import { aiBidWithStopping } from './ai-bidding';
 const landingScreenEl = document.getElementById('landing-screen')!;
 const setupScreenEl = document.getElementById('setup-screen')!;
 const auctionScreenEl = document.getElementById('auction-screen')!;
-const startAuctionBtn = document.getElementById('start-auction-btn')!;
+const startAuctionBtn = document.getElementById('start-auction-btn') as HTMLButtonElement;
 const playerInfoEl = document.getElementById('player-info')!;
 const currentBidEl = document.getElementById('current-bid')!;
 const leadingTeamEl = document.getElementById('leading-team')!;
 const timerEl = document.getElementById('timer')!;
 const auctionStatusEl = document.getElementById('auction-status')!;
-const startBtn = document.getElementById('start-btn')!;
-const nextBtn = document.getElementById('next-btn')!;
-const pauseBtn = document.getElementById('pause-btn')!;
-const resumeBtn = document.getElementById('resume-btn')!;
+const startBtn = document.getElementById('start-btn') as HTMLButtonElement;
+const nextBtn = document.getElementById('next-btn') as HTMLButtonElement;
+const pauseBtn = document.getElementById('pause-btn') as HTMLButtonElement;
+const resumeBtn = document.getElementById('resume-btn') as HTMLButtonElement;
 const teamsListEl = document.getElementById('teams-list')!;
 const teamSelectorEl = document.getElementById('team-selector') as HTMLSelectElement;
 const nextBidAmountEl = document.getElementById('next-bid-amount')!;
-const manualBidBtn = document.getElementById('manual-bid-btn')!;
+const manualBidBtn = document.getElementById('manual-bid-btn') as HTMLButtonElement;
 
 // Auction state
 let engine: AuctionEngine | null = null;

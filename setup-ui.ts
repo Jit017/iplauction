@@ -1,4 +1,7 @@
 import { SetupManager, SetupState, AuctionType } from './setup';
+
+// Re-export SetupState for use in other modules
+export type { SetupState };
 import { Player, Team } from './types';
 import { getInitialTeams } from './teams';
 import { setAuctionType, setSelectedTeam } from './auction-state';
@@ -29,7 +32,7 @@ function getUIElements(): void {
   retentionCostEl = document.getElementById('retention-cost')!;
   remainingPurseEl = document.getElementById('remaining-purse')!;
   retentionErrorsEl = document.getElementById('retention-errors')!;
-  proceedBtn = document.getElementById('proceed-btn')!;
+  proceedBtn = document.getElementById('proceed-btn') as HTMLButtonElement;
 }
 
 let setupManager: SetupManager | null = null;
