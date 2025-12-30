@@ -2,6 +2,8 @@
   "version": 2,
   "buildCommand": "npm run build:ui",
   "outputDirectory": ".",
+  "installCommand": "npm install",
+  "framework": null,
   "rewrites": [
     {
       "source": "/(.*)",
